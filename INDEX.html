@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>coach ifb Wissenstest Teil 1</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#f5f2ed;color:#4a4a4a;min-height:100vh}
+.hdr{background:#fff;border-bottom:3px solid #9b1c2e;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.hdr img{height:38px}
+.hdr-r{text-align:right;font-size:12px;color:#777;font-style:italic}
+.hdr-r b{display:block;font-size:13px;color:#9b1c2e;font-style:normal}
+.pw{height:4px;background:#e8e5df}
+.pf{height:4px;background:#9b1c2e;width:0%;transition:width .4s}
+.wrap{max-width:780px;margin:0 auto;padding:44px 20px 80px}
+/* INTRO */
+#intro{background:#fff;border-radius:3px;padding:48px;box-shadow:0 2px 10px rgba(0,0,0,.05);text-align:center}
+#intro h1{font-size:30px;color:#9b1c2e;margin-bottom:12px;line-height:1.25}
+#intro .sub{font-size:15px;color:#888;font-style:italic;margin-bottom:20px}
+#intro p{font-size:14px;line-height:1.75;color:#555;max-width:520px;margin:0 auto 24px}
+.badges{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.badge{background:#f5f2ed;border:1px solid #e0ddd7;padding:9px 16px;font-size:13px;color:#777;display:flex;align-items:center;gap:7px}
+/* BUTTONS */
+.btn{display:inline-block;background:#9b1c2e;color:#fff;padding:13px 36px;font-family:Georgia,serif;font-size:15px;font-weight:bold;border:none;cursor:pointer;border-radius:2px}
+.btn:hover{background:#b82236}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-sec{background:#e8e5df;color:#4a4a4a;font-size:13px;padding:10px 22px}
+.btn-sec:hover{background:#d5d2cc}
+.btn-out{background:transparent;border:2px solid #9b1c2e;color:#9b1c2e}
+.btn-out:hover{background:#9b1c2e;color:#fff}
+/* QUIZ */
+#quiz{display:none}
+.card{background:#fff;border-radius:3px;padding:36px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px;border-left:4px solid transparent}
+.card.ok{border-left-color:#2a6b3f}
+.card.err{border-left-color:#8b1a1a}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.qnum{font-size:11px;font-weight:bold;color:#9b1c2e;letter-spacing:.1em;text-transform:uppercase}
+.qtag{font-size:11px;background:#f5f2ed;color:#888;padding:3px 10px;border-radius:12px}
+.qtag.m{background:#fff7e6;color:#9a5a00}
+.qtext{font-size:17px;line-height:1.55;color:#3a3a3a;margin-bottom:24px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid #e8e5df;border-radius:2px;cursor:pointer;font-size:14px;line-height:1.5;text-align:left;width:100%;background:#fff;font-family:Georgia,serif}
+.opt:hover{border-color:#9b1c2e;background:#fdf8f8}
+.opt input{margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:#9b1c2e}
+.opt.rok{border-color:#2a6b3f;background:#eaf4ee;color:#1a4a2b;font-weight:bold}
+.opt.rerr{border-color:#8b1a1a;background:#fdf0f0;color:#8b1a1a}
+.opt:disabled,.opt[data-locked]{cursor:default;pointer-events:none}
+/* FEEDBACK */
+.fb{display:none;margin-top:16px;padding:16px 20px;border-radius:2px;font-size:13px;line-height:1.65}
+.fb.show{display:block}
+.fb.ok{background:#eaf4ee;border:1px solid #b4d9be;color:#1a4a2b}
+.fb.err{background:#fdf0f0;border:1px solid #ddb8b8;color:#8b1a1a}
+.fb-title{font-size:14px;font-weight:bold;margin-bottom:8px}
+.fb-cite{border-top:1px solid rgba(0,0,0,.1);margin-top:10px;padding-top:10px;font-style:italic;font-size:12px;opacity:.85}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.ctr{font-size:12px;color:#888;font-style:italic}
+/* RESULTS */
+#results{display:none}
+.rcard{background:#fff;border-radius:3px;padding:48px;box-shadow:0 2px 10px rgba(0,0,0,.05);text-align:center;margin-bottom:28px}
+.circle{width:130px;height:130px;border-radius:50%;border:6px solid #9b1c2e;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 28px;background:#f5f2ed}
+.circle-n{font-size:38px;font-weight:bold;color:#9b1c2e;line-height:1}
+.circle-l{font-size:11px;color:#888;margin-top:3px}
+.rtitle{font-size:26px;color:#3a3a3a;margin-bottom:8px}
+.rsub{font-size:15px;color:#888;font-style:italic;margin-bottom:32px}
+.stats{display:flex;justify-content:center;gap:32px;margin-bottom:36px;flex-wrap:wrap}
+.stat-n{font-size:34px;font-weight:bold;color:#9b1c2e;display:block}
+.stat-l{font-size:12px;color:#888}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.rev{background:#fff;border-radius:3px;padding:36px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.rev h2{font-size:20px;color:#3a3a3a;margin-bottom:24px;padding-bottom:10px;border-bottom:2px solid #e8e5df}
+.rvi{padding:18px 0;border-bottom:1px solid #e8e5df}
+.rvi:last-child{border-bottom:none}
+.rvq{font-size:14px;font-weight:bold;margin-bottom:7px;color:#3a3a3a}
+.rvn{color:#9b1c2e;margin-right:5px}
+.rva{font-size:13px;padding:7px 11px;border-radius:2px;margin-bottom:5px}
+.rva.w{background:#fdf0f0;color:#8b1a1a}
+.rva.r{background:#eaf4ee;color:#1a4a2b}
+.rvex{font-size:12px;color:#888;font-style:italic;margin-top:7px;line-height:1.6;padding-left:10px;border-left:2px solid #e8e5df}
+.pfoot{display:none;margin-top:20px;font-size:11px;color:#888;text-align:center;font-style:italic}
+@media print{
+  body{background:#fff}
+  .hdr{position:static;box-shadow:none}
+  .pw,.nav,.btn-row{display:none!important}
+  #intro,#quiz{display:none!important}
+  #results{display:block!important}
+  .rcard,.rev{box-shadow:none;border:1px solid #ddd}
+  .pfoot{display:block!important}
+}
+@media(max-width:580px){
+  .hdr{padding:10px 14px}
+  .hdr img{height:28px}
+  .wrap{padding:20px 12px 60px}
+  #intro,.card,.rcard,.rev{padding:22px 16px}
+  .qtext{font-size:15px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <img src="data:image/jpeg;base64,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" alt="coach ifb">
+  <div class="hdr-r"><b>Wissenstest &middot; Teil 1 von 3</b>Coaching als Haltung</div>
+</div>
+<div class="pw"><div class="pf" id="PF"></div></div>
+
+<div class="wrap">
+
+<!-- INTRO -->
+<div id="intro">
+  <h1>Wie gut kennst du<br>dein Handwerk?</h1>
+  <p class="sub">Wissenstest zur coach ifb-Ausbildung &middot; Teil&nbsp;1 von&nbsp;3</p>
+  <p>Dieser Test pr&uuml;ft dein Verst&auml;ndnis der zentralen Konzepte, Haltungen und Methoden aus dem Leitfaden <em>Coaching als Haltung</em>. Bei manchen Fragen ist mehr als eine Antwort richtig.</p>
+  <div class="badges">
+    <div class="badge">&#128203; <strong>20&nbsp;Fragen</strong></div>
+    <div class="badge">&#10022; <strong>Einzel &amp; Mehrfach</strong></div>
+    <div class="badge">&#128424; <strong>Druckbares Feedback</strong></div>
+  </div>
+  <button class="btn" onclick="START()">Test beginnen</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz">
+  <div id="QBOX"></div>
+  <div class="nav">
+    <span class="ctr" id="CTR">Frage 1 von 20</span>
+    <button class="btn btn-sec" id="NEXT" onclick="NEXTSTEP()" disabled>Weiter &#8594;</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="rcard">
+    <div class="circle"><span class="circle-n" id="RN"></span><span class="circle-l">Punkte</span></div>
+    <h2 class="rtitle" id="RT"></h2>
+    <p class="rsub" id="RS"></p>
+    <div class="stats">
+      <div><span class="stat-n" id="SR"></span><span class="stat-l">Richtig</span></div>
+      <div><span class="stat-n" id="SW"></span><span class="stat-l">Falsch</span></div>
+      <div><span class="stat-n" id="SP"></span><span class="stat-l">Prozent</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-out" onclick="window.print()">&#128424; Drucken</button>
+      <button class="btn" onclick="RESTART()">Nochmals starten</button>
+    </div>
+  </div>
+  <div class="rev"><h2>Detailliertes Feedback zu deinen Fehlern</h2><div id="REVC"></div></div>
+  <div class="pfoot">coach ifb &middot; Ausbildung zum coach ifb &middot; www.coach-ifb.de</div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+var QT=[
+"single","single","multi","single","single","single","single","single","multi","single","single","multi","single","single","multi","single","multi","single","single","single"
+];
+var QQ=[
+"Was zeigt die Forschung zur Wirksamkeit von Coaching laut Leitfaden?",
+"Das Coaching-Haus von coach ifb besteht aus fünf Bauelementen. Welche Kombination ist korrekt?",
+"Welche Aussagen zum Prozess-Modell von coach ifb sind richtig? (Mehrfachauswahl möglich)",
+"Welche Formulierung entspricht den Formgesichtspunkten der VEE (Verbalisation Emotionaler Erlebnisinhalte)?",
+"Welche drei Rollen unterscheidet coach ifb bei Coaching-Klient:innen beim Einstieg?",
+"Wozu dient die Baustellenbegehung in der ersten Coaching-Sitzung?",
+"Was bedeutet Externalisieren im coach ifb-Prozessmodell?",
+"Was meint das Aktualisieren als Methode des Internalisierens?",
+"Welche Voraussetzungen nennt der Leitfaden dafür, dass eine Führungskraft coachen kann? (Mehrfachauswahl möglich)",
+"Wofür steht das Akronym WOOP?",
+"Was beschreibt das SCARF-Modell von David Rock?",
+"Welche Aussagen zum Wertequadrat (Schulz von Thun) sind laut Leitfaden korrekt? (Mehrfachauswahl möglich)",
+"In welcher Phase des Prozessmodells gilt: Auch die unsinnige Idee darf erst einmal stehen bleiben?",
+"Was kennzeichnet eine Incisive Question im Coaching?",
+"Welche Aussagen zur Konfliktdynamik nach Glasl sind laut Leitfaden richtig? (Mehrfachauswahl möglich)",
+"Welche drei Klassen von Teilen unterscheidet Richard Schwartz in dem Modell, das im Leitfaden vorgestellt wird?",
+"Welche Fragen gehören laut Leitfaden zur fortlaufenden Selbstprüfung im Coaching? (Mehrfachauswahl möglich)",
+"Was meint der Leitfaden mit der Dramaturgie einer Coaching-Sitzung?",
+"Welcher Grundsatz steht laut Leitfaden im Mittelpunkt, wenn coach ifb von Selbstverantwortung spricht?",
+"Was unterscheidet Coaching von Psychotherapie laut der Übersichtstabelle im Leitfaden?"
+];
+var QO=[
+["Das Beherrschen möglichst vieler Methoden ist entscheidend.","Die Zugehörigkeit zu einer anerkannten Coaching-Schule ist ausschlaggebend.","Die wirksamste Intervention ist der Coach oder die Coachin selbst.","Strukturierte Fragebögen erzielen die größten Effekte."],
+["Fundament: Supervision – Säulen: Empathie, Kongruenz, Offenheit – Dach: Wertschätzung","Fundament: Selbstprüfung – Säulen: Empathie, Authentizität, Klarheit – Dach: Fördern & Fordern","Fundament: Ethik – Säulen: Zuhören, Empathie, Methodik – Dach: Ergebnisorientierung","Fundament: Vertrauen – Säulen: Klarheit, Kongruenz, Feedback – Dach: Lösungsorientierung"],
+["Die vier Schritte heißen: Internalisieren, Externalisieren, Optionalisieren, Operationalisieren.","Themen kommen von außen – Anliegen sind nach innen gerichtet.","Beim Optionalisieren wird sofort die beste Lösung fixiert.","Das Prozess-Modell beschreibt die dynamische Seite des Coachings entlang der Zeitachse."],
+["Du leidest offensichtlich unter einem Motivationsverlust, der depressiv wirkt.","Das macht dich wütend …?","Ich verstehe, dass du dich in dieser Situation schwierig fühlst.","Das Problem ist, dass du zu sensibel auf Kritik reagierst."],
+["Skeptiker:in, Neugierige:r, Engagierte:r","Passive:r, Aktive:r, Reflektierte:r","Klagende:r, Beobachter:in, Kunde/Kundin","Anfänger:in, Fortgeschrittene:r, Expert:in"],
+["Um sofort die wichtigsten Themen zu priorisieren","Um alle Themen sichtbar zu machen, ohne vorschnell zu priorisieren","Um die therapeutische Eignung der Klientin zu prüfen","Um den formalen Coaching-Vertrag abzuschließen"],
+["Das Ansprechen von Themen aus dem beruflichen Umfeld","Das Herausnehmen von Coaching-Inhalten aus dem geschützten Rahmen","Einen Schritt zurücktreten und das eigene innere Geschehen aus der Beobachter-Perspektive betrachten","Externe Feedback-Quellen (z. B. 360°) in das Coaching einbeziehen"],
+["Die Aktualisierung von Coaching-Unterlagen zwischen den Sitzungen","Den Fokus auf unmittelbare Vorgänge in der Coaching-Stunde – das Hier und Jetzt – richten","Das Überprüfen aktueller Fachliteratur","Die Standortbestimmung am Ende einer Sitzungsreihe"],
+["Ergebnisoffenheit: Die Führungskraft muss von ganzem Herzen ergebnisoffen sein.","Klärung der Rollen: Mitarbeitende müssen wissen, dass die Führungskraft als Coach agiert.","Eine formale Coach-Ausbildung ist als explizite Bedingung genannt.","Vertrauen und Authentizität: Mitarbeitende müssen von ganzem Herzen zustimmen können."],
+["Work, Outcome, Opportunity, Plan","Wish, Outcome, Obstacle, Plan","Will, Openness, Objective, Progress","Wunsch, Orientierung, Offenheit, Perspektive"],
+["Ein Stufenmodell der Konflikteskalation","Fünf soziale Domänen (Status, Sicherheit, Autonomie, Verbundenheit, Fairness), die Verhalten im beruflichen Kontext beeinflussen","Ein Fragebogen zur Coaching-Kompetenz","Eine Methode zur Erregungssteuerung in Sitzungen"],
+["Jeder Wert hat einen ergänzenden Gegenpol und kann bei Übertreibung ins Negative kippen.","Das Modell ersetzt dichotomisches Schwarz-Weiß-Denken durch ein Spektrum.","Sparsamkeit und Großzügigkeit sind ergänzende Werte; ihre Übertreibungen sind Geiz und Verschwendungssucht.","Werte entfalten ihre positive Wirkung nur im Extrempol."],
+["Beim Internalisieren","Beim Externalisieren","Beim Optionalisieren","Beim Operationalisieren"],
+["Eine konfrontative Frage, die unter Druck setzt","Eine Frage, die eine einschränkende Bedingung wegschneidet und den Suchraum erweitert","Eine biographische Tiefenbohrfrage","Eine standardisierte Abschlussfrage zur Sitzungsevaluation"],
+["Konflikte beginnen typischerweise mit einer Phase der Verhärtung, in der es noch Gespräche gibt.","Im Zuge der Eskalation werden Erklärungen tendenziell differenzierter und komplexer.","Schwarz-Weiß-Denken und selektive Wahrnehmung sind typische kognitive Folgen von Konflikten.","Das Eskalationsmodell kennt neun Stufen bis zur gegenseitigen Vernichtung."],
+["Ego, Superego, Es","Manager, Fire-Fighter, Verbannte","Täter, Opfer, Retter","Denker, Fühler, Handelnder"],
+["Was mache ich gerade und warum?","Welche Methode soll ich als nächstes einsetzen?","Wie geht es mir gerade?","Welche Beziehung habe ich jetzt zu meinem Coachee?"],
+["Die geplante Methoden-Abfolge","Die emotionale oder kognitive Erregungskurve des Coachees im Sitzungsverlauf","Das Skript für ein Rollenspiel","Die Lebensgeschichte des Coachees als Haupterzählung"],
+["Der Coachee soll lernen, mit äußeren Umständen besser umzugehen.","Der Anlass für ein Gefühl liegt immer im Verhalten anderer.","Menschen sind Mitkonstrukteure ihrer Wirklichkeit – wer das erkennt, kann sich nicht mehr hinter Sachzwängen verstecken.","Die Aufgabe des Coaches ist, dem Coachee die richtige Sichtweise zu vermitteln."],
+["Coaching richtet sich an psychisch erkrankte Personen, Therapie nur an Gesunde.","Coaching richtet sich an psychisch gesunde Menschen und zielt auf bessere Bewältigung beruflicher Herausforderungen; Therapie zielt auf psychische Gesundung.","Der Unterschied liegt allein in der Dauer.","Therapie und Coaching sind im Leitfaden gleichgesetzt."]
+];
+var QC=[
+[2],[1],[0,1,3],[1],[2],[1],[2],[1],[0,1,3],[1],[1],[0,1,2],[2],[1],[0,2,3],[1],[0,2,3],[1],[2],[1]
+];
+var QE=[
+"Der Leitfaden hält klar fest: Die wirksamste Intervention ist der Coach oder die Coachin selbst! Es ist nicht die Schule, nicht die Technik und nicht das Beherrschen von vielen Übungen.",
+"Das Coaching-Haus zeigt: Fundament = Selbstprüfung; drei Säulen = Empathie, Authentizität, Klarheit; Dach = Fördern & Fordern.",
+"A und D beschreiben das Modell korrekt. B ist ein Kernprinzip: Das Thema ist außen, das Anliegen ist innen. C ist falsch: Beim Optionalisieren werden alle Möglichkeiten zunächst offen gesammelt.",
+"VEE verlangt: kurze Sätze, Gegenwartsform, verbal/adjektivisch, anschaulich, mit halbem Fragezeichen. Das macht Sie wütend…? ist das Musterbeispiel.",
+"Der Leitfaden unterscheidet: Klagende, Beobachterin und Kunde/Kundin. Arbeiten können wir nur mit Kundinnen.",
+"Die Baustellenbegehung hilft, Themen zu sichten und zu sortieren. Von klassischen Priorisierungsansätzen raten wir ab – die Klientin wählt das Startthema selbst.",
+"Externalisieren bedeutet, einen Schritt zurückzutreten und das eigene innere Geschehen aus der Position eines wohlwollenden Beobachters zu betrachten.",
+"Aktualisieren bezeichnet nach Yalom den Fokus auf das Hier und Jetzt: Was geschieht genau jetzt in diesem Moment – da ist die Klientin ganz bei sich.",
+"Der Leitfaden nennt drei Bedingungen: Ergebnisoffenheit, Klärung der Rollen sowie Vertrauen und Authentizität. Eine formale Ausbildung ist nicht als eine der drei expliziten Bedingungen aufgeführt.",
+"WOOP = Wish (Wunsch), Outcome (Ergebnis), Obstacle (Hindernis), Plan. Das Modell basiert auf mentalem Kontrastieren.",
+"SCARF = Status, Certainty, Autonomy, Relatedness, Fairness. Es erklärt, warum Menschen auf Veränderungen oft mit Widerstand reagieren.",
+"A, B und C beschreiben das Modell korrekt. D ist falsch: Werte entfalten ihre Wirkung in Balance mit ihrem Gegenpol – nicht im Extrempol.",
+"Beim Optionalisieren gilt die Regel: Auch die spontane oder unsinnige Idee darf erst einmal stehen bleiben, um kreative Lösungen zu ermöglichen.",
+"Incisive Questions schneiden eine einschränkende Bedingung weg und öffnen den Suchraum. Beispiel: Was würden Sie sagen, wenn Sie keine Angst hätten?",
+"B ist falsch: Im Konflikt werden Erklärungen vereinfacht, nicht differenzierter. A, C und D sind korrekt.",
+"Schwartz unterscheidet: Manager (helfen in der Welt), Fire-Fighter (schützen unter Druck), Verbannte (verbergen sich hinter sichtbaren Teilen).",
+"Der Leitfaden nennt: Was mache ich gerade und warum?, Wie geht es mir gerade?, Welche Beziehung habe ich jetzt zu meinem Coachee? und weitere – nicht die Methodenauswahl.",
+"Die Dramaturgie reflektiert die emotionale oder kognitive Erregungskurve des Klienten. Ziel ist mittleres Erregungsniveau für nachhaltiges Erfahrungslernen.",
+"Watzlawick zeigt: Wir sind Mitkonstrukteure unserer Wirklichkeit. Wer das weiß, dem steht das bequeme Ausweichen in Sachzwänge nicht mehr offen.",
+"Coaching richtet sich an psychisch gesunde Menschen (Ziel: bessere Bewältigung beruflicher Herausforderungen). Psychotherapie zielt auf psychische Gesundung."
+];
+var QCI=[
+"Die wirksamste Intervention ist der Coach oder die Coachin selbst. (S. 7)",
+"Das Haus ist Haus nur als Ganzes. Ohne Fundament kein stabiles Gebäude. (S. 8)",
+"Beim Optionalisieren gilt die Regel: Auch die spontane oder unsinnige Idee darf einfach erst einmal stehen bleiben. (S. 35)",
+"Das macht Sie wütend … (?) – aufmerksame, sehr kurze Äußerungen mit halbem Fragezeichen. (S. 25)",
+"Wichtig: Kommt die Klientin als Klagende, Beobachterin oder als Kundin. (S. 14)",
+"Der Coach lädt den Klienten ein, treffende Begriffe für die einzelnen Themen zu finden. (S. 15–16)",
+"Dort, wo wir Beobachter:innen unserer Selbst sind, ist der Sitz des Ich. (S. 18)",
+"Durch Aktualisieren entsteht ein Strom an Selbstreflexion, der dort ansetzt, wo Veränderung denkbar ist. (S. 23)",
+"Führungskräfte können nur unter bestimmten Voraussetzungen Coachingaufgaben übernehmen. (S. 49)",
+"Diese Kombination aktiviert die Handlungsenergie effektiver als reines positives Denken. (S. 65)",
+"Jeder dieser fünf Faktoren kann entweder als Bedrohung oder als Belohnung wahrgenommen werden. (S. 56)",
+"Werte entfalten ihre positive Wirkung nur, wenn sie in Balance mit ihrem Gegenpol stehen. (S. 65)",
+"Umgehen wir diese frühe Zensur, stoßen wir oft auf hochkreative Ideen. (S. 35)",
+"Der kreative Raum ist geöffnet. (S. 50)",
+"Das Denken wird infiziert: selektive Wahrnehmung, simplifizierte Erklärungen, Schwarz-Weiß-Denken. (S. 51–52)",
+"Im Sinne dieses Modells unterstützt die Coachin ihren Klienten, der inneren Familie näher zu kommen. (S. 57)",
+"Selbstprüfung ist keine einmalige Aktion! Sie begleitet uns durch das gesamte Curriculum. (S. 11)",
+"Ziel ist hierbei, von jedem Start zum gleichen Ziel zu gelangen: einem mittleren Erregungsausmaß. (S. 40)",
+"Bei coach ifb steht das selbstverantwortete Leben im Mittelpunkt. (S. 27–28)",
+"Status des Klienten beim Coaching: psychisch gesund. Ziel: bessere Bewältigung beruflicher Herausforderungen. (S. 67)"
+];
+
+var cur=0, ans=[], fbShown=false;
+
+function aeq(a,b){
+  if(a.length!==b.length)return false;
+  for(var i=0;i<a.length;i++)if(a[i]!==b[i])return false;
+  return true;
+}
+function srt(a){return a.slice().sort(function(x,y){return x-y;});}
+
+function upP(){
+  document.getElementById("PF").style.width=(cur/QQ.length*100)+"%";
+}
+
+function getChk(qi){
+  var inp=document.querySelectorAll("input[name='q"+qi+"']");
+  var s=[];
+  for(var i=0;i<inp.length;i++)if(inp[i].checked)s.push(parseInt(inp[i].value));
+  return s;
+}
+
+function lockOpts(qi){
+  var inp=document.querySelectorAll("input[name='q"+qi+"']");
+  for(var i=0;i<inp.length;i++)inp[i].disabled=true;
+  var lbls=document.querySelectorAll(".opt[data-qi='"+qi+"']");
+  for(var i=0;i<lbls.length;i++){
+    lbls[i].style.pointerEvents="none";
+    lbls[i].style.cursor="default";
+  }
+}
+
+function showFB(qi){
+  fbShown=true;
+  var sel=srt(ans[qi]||[]);
+  var ok=aeq(sel,srt(QC[qi]));
+  lockOpts(qi);
+  for(var j=0;j<QO[qi].length;j++){
+    var lbl=document.getElementById("o_"+qi+"_"+j);
+    if(QC[qi].indexOf(j)>=0)lbl.className="opt rok";
+    else if(sel.indexOf(j)>=0)lbl.className="opt rerr";
+  }
+  document.getElementById("qc_"+qi).className="card "+(ok?"ok":"err");
+  var fb=document.getElementById("fb_"+qi);
+  fb.innerHTML="<div class='fb-title'>"+(ok?"&#10003; Richtig!":"&#10007; Nicht ganz richtig.")+"</div>"+
+    "<div>"+QE[qi]+"</div>"+
+    "<div class='fb-cite'>"+QCI[qi]+"</div>";
+  fb.className="fb show "+(ok?"ok":"err");
+  document.getElementById("NEXT").disabled=false;
+}
+
+function renderQ(i){
+  fbShown=false;
+  var N=document.getElementById("NEXT");
+  N.disabled=true;
+  N.textContent=(i<QQ.length-1)?"Weiter →":"Ergebnis anzeigen";
+  var multi=(QT[i]==="multi");
+  var t=multi?"checkbox":"radio";
+  var tag=multi?"★ Mehrfachauswahl":"Einzelauswahl";
+  var h="<div class='card' id='qc_"+i+"'>"+
+    "<div class='card-top'>"+
+      "<span class='qnum'>Frage "+(i+1)+" von "+QQ.length+"</span>"+
+      "<span class='qtag"+(multi?" m":"")+"'>"+tag+"</span>"+
+    "</div>"+
+    "<p class='qtext'>"+QQ[i]+"</p>"+
+    "<div class='opts' id='opts_"+i+"'>";
+  for(var j=0;j<QO[i].length;j++){
+    h+="<label class='opt' id='o_"+i+"_"+j+"' data-qi='"+i+"' data-oi='"+j+"'>"+
+      "<input type='"+t+"' name='q"+i+"' value='"+j+"'>"+
+      QO[i][j]+"</label>";
+  }
+  h+="</div><div class='fb' id='fb_"+i+"'></div></div>";
+  document.getElementById("QBOX").innerHTML=h;
+  document.getElementById("CTR").textContent="Frage "+(i+1)+" von "+QQ.length;
+
+  var inp=document.querySelectorAll("input[name='q"+i+"']");
+  for(var k=0;k<inp.length;k++){
+    (function(el,qi,oi,isM){
+      el.addEventListener("change",function(){
+        if(fbShown)return;
+        if(!isM){ans[qi]=[oi];showFB(qi);}
+        else{var s=getChk(qi);ans[qi]=s;document.getElementById("NEXT").disabled=(s.length===0);}
+      });
+    })(inp[k],i,k,multi);
+  }
+}
+
+function showResults(){
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("results").style.display="block";
+  document.getElementById("PF").style.width="100%";
+  var right=0;
+  for(var i=0;i<QQ.length;i++){
+    if(aeq(srt(ans[i]||[]),srt(QC[i])))right++;
+  }
+  var wrong=QQ.length-right, pct=Math.round(right/QQ.length*100);
+  document.getElementById("RN").textContent=right+"/20";
+  document.getElementById("SR").textContent=right;
+  document.getElementById("SW").textContent=wrong;
+  document.getElementById("SP").textContent=pct+"%";
+  var ti,su;
+  if(pct>=90){ti="Ausgezeichnet!";su="Du kennst den Leitfaden sehr gut. Exzellente Grundlage für deine Coaching-Praxis.";}
+  else if(pct>=70){ti="Gut gemacht.";su="Solides Wissen mit einigen Lücken – die Erläuterungen helfen beim Vertiefen.";}
+  else if(pct>=50){ti="Ausbaufähig.";su="Lies die Feedbacks sorgfältig – im Leitfaden findest du alle Antworten.";}
+  else{ti="Zum Nacharbeiten.";su="Wir empfehlen, den Leitfaden nochmals zu lesen und den Test zu wiederholen.";}
+  document.getElementById("RT").textContent=ti;
+  document.getElementById("RS").textContent=su;
+  var html="";
+  for(var i=0;i<QQ.length;i++){
+    if(!aeq(srt(ans[i]||[]),srt(QC[i]))){
+      var cl=QC[i].map(function(x){return QO[i][x];}).join("; ");
+      var ul=(ans[i]&&ans[i].length)?ans[i].map(function(x){return QO[i][x];}).join("; "):"(keine Auswahl)";
+      html+="<div class='rvi'><p class='rvq'><span class='rvn'>"+(i+1)+".</span>"+QQ[i]+"</p>"+
+        "<div class='rva w'>&#10007; Deine Antwort: "+ul+"</div>"+
+        "<div class='rva r'>&#10003; Richtig: "+cl+"</div>"+
+        "<p class='rvex'>"+QE[i]+"<br><br><em>"+QCI[i]+"</em></p></div>";
+    }
+  }
+  document.getElementById("REVC").innerHTML=html||"<p style='color:#2a6b3f;font-style:italic;padding:14px 0'>Alle Fragen korrekt beantwortet – kein Korrekturbedarf.</p>";
+}
+
+function NEXTSTEP(){
+  if(!fbShown&&QT[cur]==="multi"){
+    var s=getChk(cur);ans[cur]=s;showFB(cur);
+    document.getElementById("NEXT").textContent=(cur<QQ.length-1)?"Weiter →":"Ergebnis anzeigen";
+    return;
+  }
+  cur++;upP();
+  if(cur>=QQ.length){showResults();return;}
+  renderQ(cur);
+}
+
+function START(){
+  document.getElementById("intro").style.display="none";
+  document.getElementById("quiz").style.display="block";
+  renderQ(0);upP();
+}
+
+function RESTART(){
+  cur=0;ans=[];fbShown=false;
+  document.getElementById("results").style.display="none";
+  document.getElementById("PF").style.width="0%";
+  document.getElementById("intro").style.display="block";
+}
+</script>
+</body>
+</html>
